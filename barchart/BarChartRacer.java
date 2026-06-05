@@ -1,46 +1,73 @@
+import java.util.Arrays;
 
-public class Bar implements Comparable<Bar> {
-
-    private final String name;
-    private final int value;
-    private final String category;
-
-    public Bar(String name, int value, String category) {
-        if (name == null || category == null || value < 0) {
-            throw new IllegalArgumentException();
-        }
-
-        this.name = name;
-        this.value = value;
-        this.category = category;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    @Override
-    public int compareTo(Bar that) {
-        if (that == null) {
-            throw new NullPointerException();
-        }
-        return Integer.compare(this.value, that.value);
-    }
+public class BarChartRacer {
 
     public static void main(String[] args) {
 
-        Bar b1 = new Bar("Beijing", 22674, "East Asia");
-        Bar b2 = new Bar("Delhi", 27890, "South Asia");
+        StdDraw.setCanvasSize(1000, 700);
+        StdDraw.enableDoubleBuffering();
 
-        System.out.println(b1.getName());
-        System.out.println(b1.compareTo(b2));
+        String filename = args[0];
+        int k = Integer.parseInt(args[1]);
+
+        In in = new In(filename);
+
+        String title = in.readLine();
+        String xAxis = in.readLine();
+        String source = in.readLine();
+
+        BarChart chart = new BarChart(title, xAxis, source);
+
+        in.readLine(); // skip blank line after header
+
+        while (in.hasNextLine()) {
+
+            chart.reset();
+
+            String line = in.readLine();
+
+            if (line == null || line.trim().isEmpty()) {
+                continue;
+            }
+
+            int n = Integer.parseInt(line);
+
+            Bar[] bars = new Bar[n];
+            String caption = "";
+
+            for (int i = 0; i < n; i++) {
+
+                String record = in.readLine();
+                String[] fields = record.split(",");
+
+                caption = fields[0];
+                String name = fields[1];
+                int value = Integer.parseInt(fields[3]);
+                String category = fields[4];
+
+                bars[i] = new Bar(name, value, category);
+            }
+
+            Arrays.sort(bars);
+
+            for (int i = Math.max(0, n - k); i < n; i++) {
+                chart.add(
+                    bars[i].getName(),
+                    bars[i].getValue(),
+                    bars[i].getCategory()
+                );
+            }
+
+            chart.setCaption(caption);
+
+            StdDraw.clear();
+            chart.draw();
+            StdDraw.show();
+            StdDraw.pause(50);
+
+            if (in.hasNextLine()) {
+                in.readLine(); // skip blank line between groups
+            }
+        }
     }
 }

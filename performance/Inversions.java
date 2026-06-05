@@ -1,65 +1,62 @@
 public class Inversions {
 
-    // Returns the number of inversions in a[].
+    // Return the number of inversions in the permutation a[].
     public static long count(int[] a) {
-        int[] aux = new int[a.length];
-        return count(a, aux, 0, a.length - 1);
-    }
-
-    // Returns the number of inversions in a[lo..hi].
-    private static long count(int[] a, int[] aux, int lo, int hi) {
-        if (lo >= hi) {
-            return 0;
-        }
-
-        int mid = lo + (hi - lo) / 2;
-
         long inversions = 0;
-        inversions += count(a, aux, lo, mid);
-        inversions += count(a, aux, mid + 1, hi);
-        inversions += merge(a, aux, lo, mid, hi);
+
+        for (int i = 0; i < a.length; i++) {
+            for (int j = i + 1; j < a.length; j++) {
+                if (a[i] > a[j]) {
+                    inversions++;
+                }
+            }
+        }
 
         return inversions;
     }
 
-    // Merges two sorted subarrays and counts split inversions.
-    private static long merge(int[] a, int[] aux,
-                              int lo, int mid, int hi) {
+    // Return a permutation of length n with exactly k inversions.
+    public static int[] generate(int n, long k) {
+        int[] perm = new int[n];
 
-        for (int k = lo; k <= hi; k++) {
-            aux[k] = a[k];
-        }
+        int left = 0;
+        int right = n - 1;
+        int low = 0;
+        int high = n - 1;
 
-        int i = lo;
-        int j = mid + 1;
-        long inversions = 0;
+        while (low <= high) {
+            long maxInv = high - low;
 
-        for (int k = lo; k <= hi; k++) {
-
-            if (i > mid) {
-                a[k] = aux[j++];
-            }
-            else if (j > hi) {
-                a[k] = aux[i++];
-            }
-            else if (aux[i] <= aux[j]) {
-                a[k] = aux[i++];
+            if (k >= maxInv) {
+                perm[left++] = high;
+                k -= maxInv;
+                high--;
             }
             else {
-                a[k] = aux[j++];
-                inversions += (mid - i + 1);
+                perm[right--] = high;
+                high--;
             }
         }
 
-        return inversions;
+        return perm;
     }
 
+    // Takes an integer n and a long k as command-line arguments,
+    // and prints a permutation of length n with exactly k inversions.
     public static void main(String[] args) {
+        int n = Integer.parseInt(args[0]);
+        long k = Long.parseLong(args[1]);
 
-        int[] a = { 3, 1, 2 };
-        System.out.println(count(a)); // 2
+        int[] permutation = generate(n, k);
 
-        int[] b = { 8, 4, 2, 1 };
-        System.out.println(count(b)); // 6
+        for (int i = 0; i < permutation.length; i++) {
+            System.out.print(permutation[i]);
+
+            if (i < permutation.length - 1) {
+                System.out.print(" ");
+            }
+        }
+
+        System.out.println();
     }
 }
