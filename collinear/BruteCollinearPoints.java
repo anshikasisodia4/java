@@ -37,11 +37,11 @@ public class BruteCollinearPoints {
                         double s2 = copy[i].slopeTo(copy[k]);
                         double s3 = copy[i].slopeTo(copy[l]);
 
-                        if (Double.compare(s1, s2) == 0 &&
-                            Double.compare(s1, s3) == 0) {
+                        if (Double.compare(s1, s2) == 0
+                                && Double.compare(s1, s3) == 0) {
 
                             segments.add(
-                                new LineSegment(copy[i], copy[l])
+                                    new LineSegment(copy[i], copy[l])
                             );
                         }
                     }
@@ -55,6 +55,6 @@ public class BruteCollinearPoints {
     }
 
     public LineSegment[] segments() {
-        return segments.toArray(new LineSegment[0]);
+        return segments.toArray(new LineSegment[segments.size()]);
     }
 }

@@ -21,26 +21,23 @@ public class FastCollinearPoints {
             Point origin = sorted[i];
 
             Point[] bySlope = sorted.clone();
-
             Arrays.sort(bySlope, origin.slopeOrder());
 
             int first = 1;
 
             while (first < n) {
 
-                double slope =
-                        origin.slopeTo(bySlope[first]);
-
+                double slope = origin.slopeTo(bySlope[first]);
                 int last = first + 1;
 
                 while (last < n &&
-                       Double.compare(
-                           slope,
-                           origin.slopeTo(bySlope[last])) == 0) {
-
+                        Double.compare(
+                                slope,
+                                origin.slopeTo(bySlope[last])) == 0) {
                     last++;
                 }
 
+                // Found at least 3 points with same slope to origin
                 if (last - first >= 3) {
 
                     Point min = origin;
@@ -55,10 +52,9 @@ public class FastCollinearPoints {
                             max = bySlope[k];
                     }
 
+                    // Add segment only if origin is the smallest point
                     if (origin.compareTo(min) == 0) {
-                        segments.add(
-                                new LineSegment(min, max)
-                        );
+                        segments.add(new LineSegment(min, max));
                     }
                 }
 
@@ -92,6 +88,6 @@ public class FastCollinearPoints {
     }
 
     public LineSegment[] segments() {
-        return segments.toArray(new LineSegment[0]);
+        return segments.toArray(new LineSegment[segments.size()]);
     }
 }
